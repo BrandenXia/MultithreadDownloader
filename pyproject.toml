@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "multithreaddownloader"
+version = "0.1.0"
+license = "MIT"
+description = "A multithread downloader"
+authors = ["BrandenXia <xxtbranden@outlook.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+requests = "^2.28.2"
+pyqt6 = "^6.5.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
