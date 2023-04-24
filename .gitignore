@@ -85,3 +85,8 @@ fabric.properties
 *.iml
 out
 gen
+
+# Project
+test.*
+MultithreadDownloader/config
+MultithreadDownloader/logs
