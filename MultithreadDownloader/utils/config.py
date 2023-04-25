@@ -1,17 +1,23 @@
 import json
 import os
-
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 from MultithreadDownloader.utils import system_directorys
 from MultithreadDownloader.utils.logger import logger
 
-DEFAULT_CONFIG: dict = {
+from typing import Literal
+
+CONFIG_TYPES = Literal["download"]
+CONFIG_KEYS = Literal["max_threads", "max_downloads", "download_path", "split_num"]
+
+
+DEFAULT_CONFIG: dict[str, dict[str, Any]] = {
     "download": {
         "max_threads": os.cpu_count(),
         "max_downloads": 3,
-        "download_path": str(system_directorys.get_download_directory())
+        "download_path": str(system_directorys.get_download_directory()),
+        "split_num": 8
     }
 }
 
@@ -26,13 +32,13 @@ if not Path.exists(CONFIG_PATH):
 
 # Load config file
 with open(CONFIG_PATH, "rb") as f:
-    CONFIG: Dict[str, Any] = json.loads(f.read().decode("utf-8"))
+    CONFIG: dict[str, Any] = json.loads(f.read().decode("utf-8"))
 logger.info("Config loaded.")
 
 
-def get_config(key: str) -> Any:
+def get_config(config_type: CONFIG_TYPES, key: CONFIG_KEYS) -> Any:
     """Get config by key."""
-    return CONFIG[key]
+    return CONFIG[config_type][key]
 
 
 def save_config(key: str, value: Any) -> None:
