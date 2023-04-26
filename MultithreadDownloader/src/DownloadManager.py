@@ -83,7 +83,6 @@ class DownloadManager:
         """
         Add a url to the download queue
         :param url: a url to download
-        :return:
         """
         logger.info(f'Add {url} to the download queue')
         self._download_queue.append(url)

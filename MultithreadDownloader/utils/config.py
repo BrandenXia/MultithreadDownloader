@@ -19,7 +19,7 @@ DEFAULT_CONFIG: dict[str, dict[str, Any]] = {
     }
 }
 
-CONFIG_PATH: Path = Path("./config/config.json")
+CONFIG_PATH: Path = system_directorys.get_config_directory() / "config.json"
 
 # Check if config file exists
 if not Path.exists(CONFIG_PATH):
@@ -36,13 +36,24 @@ logger.info("Config loaded.")
 
 
 def get_config(config_type: CONFIG_TYPES, key: CONFIG_KEYS) -> Any:
-    """Get config by key."""
+    """
+    Get config by key.
+    :param config_type: type of config
+    :param key: key of config
+    :return: value of config
+    """
     return CONFIG[config_type][key]
 
 
-def save_config(key: str, value: Any) -> None:
-    """Save config by key."""
-    CONFIG[key] = value
+def save_config(config_type: CONFIG_TYPES, key: CONFIG_KEYS, value: Any) -> None:
+    """
+    Save config by key.
+    :param config_type: type of config
+    :param key: key of config
+    :param value: value of config
+    :return: None
+    """
+    CONFIG[config_type][key] = value
     with open(CONFIG_PATH, "wb") as config_file:
         config_file.write(json.dumps(CONFIG, indent=4).encode("utf-8"))
     logger.info("Config saved.")

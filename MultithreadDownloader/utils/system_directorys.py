@@ -6,6 +6,7 @@ from pathlib import Path
 def get_download_directory() -> Path:
     """
     Get the download directory from the config file.
+    :return: The download directory.
     """
     # Solution from https://stackoverflow.com/questions/35851281/python-finding-the-users-downloads-folder
     if os.name == "nt":  # Windows
@@ -17,3 +18,14 @@ def get_download_directory() -> Path:
         return Path(location)
     else:  # Linux / Mac
         return Path.home() / "Downloads"
+
+
+def get_config_directory() -> Path:
+    """
+    Get the config directory from the config file.
+    :return: The config directory.
+    """
+    if os.name == "nt":  # Windows
+        return Path.home() / "AppData" / "Roaming" / "MultithreadDownloader"
+    else:  # Linux / Mac
+        return Path.home() / ".config" / "MultithreadDownloader"
