@@ -1,13 +1,12 @@
 import threading
+from collections.abc import Callable
+from typing import Literal
 
 import requests
 
-from typing import Literal
-from collections.abc import Callable
-
+from MultithreadDownloader.src.DownloadThread import DownloadThread
 from MultithreadDownloader.utils import config
 from MultithreadDownloader.utils.logger import logger
-from MultithreadDownloader.src.DownloadThread import DownloadThread
 
 download_status = Literal['canceled', 'finished', 'failed']
 
@@ -72,6 +71,7 @@ class DownloadManager:
         :param func: function to be decorated
         :return: function with thread lock
         """
+
         def wrapper(*args, **kwargs):
             with self.lock:
                 return func(*args, **kwargs)

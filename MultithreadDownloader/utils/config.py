@@ -2,15 +2,13 @@ import json
 import os
 from pathlib import Path
 from typing import Any
+from typing import Literal
 
 from MultithreadDownloader.utils import system_directorys
 from MultithreadDownloader.utils.logger import logger
 
-from typing import Literal
-
 CONFIG_TYPES = Literal["download"]
 CONFIG_KEYS = Literal["max_threads", "max_downloads", "download_path", "split_num"]
-
 
 DEFAULT_CONFIG: dict[str, dict[str, Any]] = {
     "download": {
