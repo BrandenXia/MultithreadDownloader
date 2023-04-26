@@ -24,7 +24,6 @@ CONFIG_PATH: Path = system_directorys.get_config_directory() / "config.json"
 # Check if config file exists
 if not Path.exists(CONFIG_PATH):
     # If not, create it
-    Path.mkdir(CONFIG_PATH.parent, parents=True, exist_ok=True)
     logger.info("Config file not found, creating...")
     with open(CONFIG_PATH, "wb") as f:
         f.write(json.dumps(DEFAULT_CONFIG, indent=4).encode("utf-8"))

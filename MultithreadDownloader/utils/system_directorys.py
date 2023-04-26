@@ -14,10 +14,12 @@ def get_download_directory() -> Path:
         sub_key: str = r'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders'
         downloads_guid: str = '{374DE290-123F-4565-9164-39C4925E467B}'
         with winreg.OpenKey(winreg.HKEY_CURRENT_USER, sub_key) as key:
-            location = winreg.QueryValueEx(key, downloads_guid)[0]
-        return Path(location)
+            location = Path(winreg.QueryValueEx(key, downloads_guid)[0])
     else:  # Linux / Mac
-        return Path.home() / "Downloads"
+        location = Path.home() / "Downloads"
+    if not location.exists():
+        Path.mkdir(location, parents=True, exist_ok=True)
+    return location
 
 
 def get_config_directory() -> Path:
@@ -26,6 +28,23 @@ def get_config_directory() -> Path:
     :return: The config directory.
     """
     if os.name == "nt":  # Windows
-        return Path.home() / "AppData" / "Roaming" / "MultithreadDownloader"
+        location = Path.home() / "AppData" / "Roaming" / "MultithreadDownloader"
     else:  # Linux / Mac
-        return Path.home() / ".config" / "MultithreadDownloader"
+        location = Path.home() / ".config" / "MultithreadDownloader"
+    if not location.exists():
+        Path.mkdir(location, parents=True, exist_ok=True)
+    return location
+
+
+def get_log_directory() -> Path:
+    """
+    Get the log directory from the config file.
+    :return: The log directory.
+    """
+    if os.name == "nt":  # Windows
+        location = Path.home() / "AppData" / "Local" / "MultithreadDownloader"
+    else:  # Linux / Mac
+        location = Path.home() / ".local" / "share" / "MultithreadDownloader"
+    if not location.exists():
+        Path.mkdir(location, parents=True, exist_ok=True)
+    return location
