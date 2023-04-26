@@ -4,7 +4,7 @@ from typing import Literal
 
 import requests
 
-from MultithreadDownloader.src.DownloadThread import DownloadThread
+from MultithreadDownloader.threads.DownloadThread import DownloadThread
 from MultithreadDownloader.utils import config
 from MultithreadDownloader.utils.logger import logger
 
