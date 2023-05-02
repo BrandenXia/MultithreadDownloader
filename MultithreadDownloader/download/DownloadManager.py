@@ -4,7 +4,7 @@ from typing import Literal
 
 import requests
 
-from MultithreadDownloader.threads.DownloadThread import DownloadThread
+from MultithreadDownloader.download.DownloadThread import DownloadThread
 from MultithreadDownloader.utils import config
 from MultithreadDownloader.utils.logger import logger
 
@@ -53,9 +53,9 @@ class DownloadManager:
         self.downloaded: list[tuple[str, str]] = []
         # Queue of tasks to be done
         self._tasks: list[tuple[str, int, int]] = []
-        # Max number of threads
+        # Max number of download
         self.max_threads: int = config.get_config("download", "max_threads")
-        # Queue of threads
+        # Queue of download
         self._threads: list[DownloadThread] = []
         # Number of splits
         self.split_num: int = config.get_config("download", "split_num")
@@ -201,7 +201,7 @@ class DownloadManager:
     @with_lock
     def clean_thread(self) -> None:
         """
-        Remove finished threads from the thread queue
+        Remove finished download from the thread queue
         """
         logger.debug(f'Cleaning the thread queue')
         [self._threads.remove(thread) for thread in self._threads if not thread.is_alive()]
