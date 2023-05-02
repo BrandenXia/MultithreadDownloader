@@ -90,3 +90,5 @@ gen
 test.*
 MultithreadDownloader/config
 MultithreadDownloader/logs
+
+.venv
