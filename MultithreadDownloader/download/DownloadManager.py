@@ -27,11 +27,10 @@ class DaemonThread(threading.Thread):
                 url: str = self._parent.get_download()
                 try:
                     length: int = requests.head(url).headers.get('Content-Length')
+                    self._parent.assign_task(url, length)
+                    self._parent.add_downloading(url, length)
                 except Exception as e:
                     logger.error(f'Failed to get the length of {url}: ' + str(e))
-                    continue
-                self._parent.assign_task(url, length)
-                self._parent.add_downloading(url, length)
 
             # if task queue is not empty and thread queue is not full, assign a task to a thread
             if not self._parent.task_empty() and self._parent.thread_available():
