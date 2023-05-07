@@ -129,7 +129,13 @@ class DownloadManager:
         :return: downloading percentage
         """
         logger.debug(f'Get the downloading percentage of {url}')
-        return sum([thread.percentage for thread in self._threads if thread.url == url])
+        downloaded: int = 0
+        for thread in self._threads:
+            if thread.url == url:
+                downloaded += thread.percentage
+        for url_, length in self._downloading:
+            if url_ == url:
+                return downloaded / length
 
     def downloading_available(self) -> bool:
         """
