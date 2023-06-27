@@ -18,7 +18,7 @@ class DownloadThread(threading.Thread):
 
     def run(self) -> None:
         res = requests.get(self.url, headers={'Range': f'bytes={self.start_byte}-{self.end_byte}'}, stream=True)
-        with open(self.path, 'rb') as f:
+        with open(self.path, 'wb') as f:
             f.seek(self.start_byte)
             for chunk in res.iter_content(chunk_size=1024):
                 f.write(chunk)

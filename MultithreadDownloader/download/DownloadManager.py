@@ -1,14 +1,25 @@
 import threading
+import requests
+import time
+
 from collections.abc import Callable
 from typing import Literal
-
-import requests
 
 from MultithreadDownloader.download.DownloadThread import DownloadThread
 from MultithreadDownloader.utils import config
 from MultithreadDownloader.utils.logger import logger
 
+
 download_status = Literal['canceled', 'finished', 'failed']
+
+lock: threading.Lock = threading.Lock()
+
+
+def with_lock(func: Callable) -> Callable:
+    def wrapper(*args, **kwargs):
+        with lock:
+            return func(*args, **kwargs)
+    return wrapper
 
 
 class DaemonThread(threading.Thread):
@@ -26,11 +37,12 @@ class DaemonThread(threading.Thread):
             if self._parent.downloading_available() and not self._parent.download_empty():
                 url: str = self._parent.get_download()
                 try:
-                    length: int = requests.head(url).headers.get('Content-Length')
+                    length: int = int(requests.head(url).headers.get('Content-Length'))
                     self._parent.assign_task(url, length)
                     self._parent.add_downloading(url, length)
                 except Exception as e:
                     logger.error(f'Failed to get the length of {url}: ' + str(e))
+            time.sleep(5)
 
             # if task queue is not empty and thread queue is not full, assign a task to a thread
             if not self._parent.task_empty() and self._parent.thread_available():
@@ -58,24 +70,9 @@ class DownloadManager:
         self._threads: list[DownloadThread] = []
         # Number of splits
         self.split_num: int = config.get_config("download", "split_num")
-        # Thread lock
-        self.lock: threading.Lock = threading.Lock()
         # Daemon thread
         self.daemon: DaemonThread = DaemonThread(self)
         self.daemon.start()
-
-    def with_lock(self, func: Callable) -> Callable:
-        """
-        Decorator to get the thread lock
-        :param func: function to be decorated
-        :return: function with thread lock
-        """
-
-        def wrapper(*args, **kwargs):
-            with self.lock:
-                return func(*args, **kwargs)
-
-        return wrapper
 
     @with_lock
     def add_download(self, url: str) -> None:
@@ -93,7 +90,8 @@ class DownloadManager:
         :return: url from the download queue
         """
         logger.debug(f'Get a url from the download queue')
-        return self._download_queue.pop(0)
+        url = self._download_queue.pop()
+        return url
 
     def download_empty(self) -> bool:
         """
